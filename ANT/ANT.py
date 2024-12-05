@@ -13,6 +13,6 @@ from Channel import Channel
 # Importing functions created in Receiver.py
 from Receiver import Receiver
 
-bits = generate_bits(30,False)
+bits = generate_bits(32.32,False)
 
 print(bits)
