@@ -18,32 +18,37 @@ def detect_symbols(d_hat,switch_mod,switch_graph):
 
       # 16QAM
     if (switch_mod==0):
-        code_r='00'
-        code_i='00'
+        c_hat=[]
+        # code_r='00'
+        # code_i='00'
         # Check the real part and assign the code
-        for d in range(0,len(d_hat,1)):
+        for d in d_hat:
             if np.real(d)<-2:
                 code_r='00'
             elif -2<=np.real(d)<0:
                 code_r='01'
-            elif 0<np.real(d)<=2:
+            elif 0<=np.real(d)<=2:
                 code_r='11'
             elif np.real(d)>2:
                 code_r='10'
+            else:
+                code_r='Unknown'
 
         #Check it for imaginary pary
             if np.imag(d)<-2:
-                code_i='10'
-            elif -2<=np.imag(d)<0:
-                code_i='11'
-            elif 0<np.imag(d)<=2:
-                code_i='01'
-            elif np.imag(d)>2:
                 code_i='00'
+            elif -2<=np.imag(d)<0:
+                code_i='01'
+            elif 0<=np.imag(d)<=2:
+                code_i='11'
+            elif np.imag(d)>2:
+                code_i='10'
+            else:
+                code_i='Unknown'
 
-        combined_code=code_r+code_i
-        print('combined_code')
-        c_hat.append(combined_code)
+            combined_code=code_r+code_i
+            # print('combined_code')
+            c_hat.append(combined_code)
 
 
 

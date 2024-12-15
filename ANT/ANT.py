@@ -69,8 +69,11 @@ tx_power = transmitter_power()
 switch_graph_channel = input("Enter ON to display graph of channel output or OFF otherwise: ")
 [y,SNR] =  simulate_channel(d,tx_power,switch_graph_channel)
 
+print
+
 # Receiver Side
 angles = np.angle(d)
 print(angles)
-c_hat = detect_symbols(d,1,'ON')
+c_hat = detect_symbols(d,0,'ON')
 print(c_hat)
+
