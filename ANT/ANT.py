@@ -64,8 +64,6 @@ tx_power = transmitter_power()
 switch_graph_channel = input("\033[31m\033[1mEnter ON/on to display graph of channel output or OFF otherwise:\033[0m\033[0m ")
 [y,SNR] =  simulate_channel(Filtered_signal,tx_power,switch_graph_channel)
 
-print
-
 # Receiver
 
 # angles = np.angle(d)
