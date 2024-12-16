@@ -42,7 +42,7 @@ def generate_bits(n_bits,switch_graph):
             plt.ylim(0,1)
             plt.yticks([0, 1])
             plt.grid(axis='both', linestyle='--', alpha=0.7)
-            plt.show()
+            # plt.show()
 
         else:
             pass

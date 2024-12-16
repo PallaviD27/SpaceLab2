@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Input parameters that are given
-np.set_printoptions(suppress=True, precision=4)
+np.set_printoptions(suppress=True, precision=8)
 distance = 36000000    # Height of GEO satellites above the surface of the earth in m
 CarrierFreq = 20000000000   # Carrier frequency of 20 GHz
 LightSpeed = 300000000  # Speed of light in m/s
@@ -17,15 +17,16 @@ kB = 1.38e-23    # Boltzmann constant in W/Hz K
 
 
 # Calculate Path Loss in dB
-PathLoss = (20 * np.log10 ((4 * np.pi * distance * CarrierFreq )/LightSpeed)) - (Ga + Gb)
-PathLoss_linear  =  10 ** (-PathLoss/10)
+PathLoss_dB = (20 * np.log10 ((4 * np.pi * distance * CarrierFreq )/LightSpeed)) - (Ga + Gb)
+PathLoss_linear  =  10 ** (PathLoss_dB/10)
 
-print(f'\033[32m\033[1mPath loss:\033[0m\033[0m {PathLoss} dB')
-print(f'\033[32m\033[1mLinear path loss:\033[0m\033[0m {PathLoss_linear}')
+print(f'\033[32m\033[1mPath loss:\033[0m\033[0m {PathLoss_dB} dB')
+print(f'\033[32m\033[1mLinear path loss:\033[0m\033[0m {PathLoss_linear} W')
 
 # Calculate Noise Power
 Noise_power = (kB * TN * BW)   # Noise power for bandwidth is Power spectral density * bandwidth. Power spectral density = (kB * TN )/2
-print(f'\033[32m\033[1mNoise Power:\033[0m\033[0m {Noise_power}')
+Noise_power_dB = (10 * np.log10(Noise_power))
+print(f'\033[32m\033[1mNoise Power:\033[0m\033[0m {Noise_power_dB} dB')
 
 def transmitter_power():
     ''''
@@ -38,42 +39,54 @@ def transmitter_power():
 
     Aim is to achieve a desired SNR
     '''
-# Calculate transmitter power for SNR = 20 dB at receiver
-    trans_power = (Noise_power * (10**2) )/PathLoss_linear
-    print(f'\033[32m\033[1mTransmitter Power:\033[0m\033[0m {trans_power} ')
-    return 10.0
+# Calculate transmitter power for SNR belonging to [-5dB,30dB] at receiver
+    SNR_dB=np.arange(-5,35,5)
+    print(f'SNR values: {SNR_dB}')
+    trans_power_dB = SNR_dB + PathLoss_dB + Noise_power_dB
+    trans_power_linear = 10 ** (trans_power_dB/10)
+    print(f'\033[32m\033[1mTransmitter Power:\033[0m\033[0m {trans_power_dB} dB ')
+    print(f'\033[32m\033[1m Linear Transmitter Power:\033[0m\033[0m {trans_power_linear} ')
+    return trans_power_linear
 def simulate_channel(x,tx_power,switch_graph):
-    np.set_printoptions(suppress=True, precision=6)
-    amplified_x = x * tx_power
-    print(f'\033[32m\033[1mAmplified input:\033[0m\033[0m {amplified_x}')
-# Calculate attenuated signal by multiplying with path loss factor
-    att_sig = amplified_x * np.sqrt (PathLoss_linear)
-    print(f'\033[32m\033[1mAttenuated input after path losses:\033[0m\033[0m {att_sig}')
-    # Complex_att_sig = att_sig[:,0] + 1j*att_sig[:,1]
-    # print(f'Complex attenuated signal:{Complex_att_sig}')
-    Noise_std_dev= np.sqrt(Noise_power/2)
+    ''''
+        A channel is constituted of transmitter amplifier, path loss, additive whote gaussian noise and receiver amplifier
+        Transmitter amplifier - amplifies the transmitted signal
+        Path Loss -
+        Receiver amplifier - amplifies received signal. GRX =1
+
+        Path loss =
+
+        Aim is to achieve a desired SNR
+        '''
+# Generate White Gaussian Noise
+    Noise_std_dev = np.sqrt(Noise_power / 2)
     print(f'\033[32m\033[1mStandard deviation of noise:\033[0m\033[0m {Noise_std_dev}')
-    Random_Noise = np.random.randn(len(x))
-    print(f'\033[32m\033[1mRandom generated noise:\033[0m\033[0m {Random_Noise}')
-    Noise_real= Noise_std_dev * np.random.randn(len(x))
-    Noise_imag = Noise_std_dev * np.random.randn(len(x))
+    Noise_real = np.random.normal(loc=0, scale=Noise_std_dev, size=len(x)) / np.sqrt(2)
+    Noise_imag = np.random.normal(loc=0, scale=Noise_std_dev, size=len(x)) / np.sqrt(2)
     WGN = np.column_stack(Noise_real + 1j * Noise_imag)
     print(f'\033[32m\033[1mWhite Gaussian Noise:\033[0m\033[0m {WGN}')
-    y = att_sig + WGN
-    SNR=10 * np.log10 (tx_power * PathLoss_linear / Noise_power)
-    print (f'\033[32m\033[1mChannel Output:\033[0m\033[0m {y}')
 
-    if switch_graph.upper()==('ON'):
-        plt.figure(figsize=(6, 6))
-        plt.scatter(np.real(y), np.imag(y), color='r')
-        plt.title('Received Signal (with Noise)', fontweight='bold')
-        plt.xlabel('In-phase', fontweight='bold')
-        plt.ylabel('Quadrature-phase', fontweight ='bold')
-        plt.grid(True)
-        plt.show()
+# Plot channel output for different SNRs
+    np.set_printoptions(suppress=True, precision=6)
+    SNR_dB = np.arange(-5, 35, 5)
+    trans_power_linear=transmitter_power()
+    for power, snr in zip(trans_power_linear, SNR_dB):
+# Generate Channel output by adding White Gaussian Noise to amplified signal
+        amplified_x_at_Powerpower = x * np.sqrt(power) # Signal amplification is proportional to square root of power
+        print(f'\033[32m\033[1mAmplified input at transmitter power = {power} W:\033[0m\033[0m {amplified_x_at_Powerpower}')
+        y = amplified_x_at_Powerpower + WGN
+        print (f'\033[32m\033[1mChannel Output at Power = {power } W:\033[0m\033[0m {y}')
+        if switch_graph.upper()=='ON':
+            plt.figure(figsize=(6, 6))
+            plt.scatter(np.real(y), np.imag(y), color='r',label=f'SNR = {snr} dB\nTx Power = {power:.2e} W', alpha=0.7)
+            plt.title('Channel Output (with Noise)', fontweight='bold')
+            plt.xlabel('In-phase', fontweight='bold')
+            plt.ylabel('Quadrature-phase', fontweight ='bold')
+            plt.grid(True)
+            plt.legend()
 
-    else:
-        pass
+        else:
+            pass
 
-    return y,SNR
+    return y,SNR_dB
 

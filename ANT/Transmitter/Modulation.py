@@ -56,8 +56,8 @@ def map2symbols(CodeWord,switch_mod,switch_graph):
         plt.axvline(0, color='black', linestyle='--', linewidth=0.5)
         plt.grid(True, linestyle='--', linewidth=0.5)
         plt.title('16-QAM Constellation Diagram with Gray Mapping', fontweight='bold')
-        plt.xlabel('In-phase (I)*(1/sqrt(10))', fontweight='bold')
-        plt.ylabel('Quadrature-phase (Q)*(1/sqrt(10))', fontweight='bold')
+        plt.xlabel('In-phase (I)*sqrt(10)', fontweight='bold')
+        plt.ylabel('Quadrature-phase (Q)* sqrt(10)', fontweight='bold')
 
 # Annotate points with Gray codes
         for i, point in enumerate(constellation_points):
@@ -159,9 +159,9 @@ def map2symbols(CodeWord,switch_mod,switch_graph):
         plt.axhline(0,color='black',linewidth=0.5)
         plt.axvline(0, color ='black', linewidth=0.5)
         plt.grid(True, linestyle='--', alpha=0.6)
-        plt.xlabel('In-phase',fontweight='bold')
-        plt.ylabel('Quadrature-phase',fontweight='bold')
-        plt.title('16-PSK Constellation Diagram',fontweight='bold')
+        plt.xlabel('In-phase (I)',fontweight='bold')
+        plt.ylabel('Quadrature-phase (Q)',fontweight='bold')
+        plt.title('16-PSK Constellation Diagram with Gray Mapping',fontweight='bold')
 
 # Display the In-phase and Quad-phase values for each of the 4 bits in the Coded sequence
         for p1 in range(Code_length // 4):
@@ -179,8 +179,8 @@ def map2symbols(CodeWord,switch_mod,switch_graph):
             else:
                 print(f"No match found for Modulating Set {ModSetp1_binary}")
 
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
         print(f"\033[32m\033[1mOutput Vector:\033[0m\033[0m\n{Output_Vector}")
 
     else:
@@ -201,11 +201,11 @@ def map2symbols(CodeWord,switch_mod,switch_graph):
         plt.axvline(0, color='black', linewidth=0.5)
         plt.grid(True, linestyle='--', alpha=0.6)
 
-        plt.xlabel('In-phase', fontweight='bold')
-        plt.ylabel('Quadrature-phase', fontweight='bold')
+        plt.xlabel('In-phase (I)', fontweight='bold')
+        plt.ylabel('Quadrature-phase (Q)', fontweight='bold')
         plt.title('Modulated Symbols', fontweight='bold')
 
-        plt.show()
+        # plt.show()
 
     elif switch_graph.upper()=="OFF":
          pass
