@@ -9,11 +9,9 @@ from Transmitter.Modulation import map2symbols
 from Channel.Channel import transmitter_power
 from Channel.Channel import simulate_channel
 from Transmitter.Filter import filter_tx
-from Receiver.Demodulation import detect_symbols
-import numpy as np
 import matplotlib.pyplot as plt
-# Transmitter
 
+# Transmitter
 '''Generate Bits'''
 # User input for bit string generation
 try:
@@ -51,7 +49,7 @@ d= Modulated_Output[:,0] + 1j * Modulated_Output[:,1]
 
 print(f'\033[32m\033[1mComplex Signal:\033[0m\033[0m {d}')
 
-'''Filtering'''
+'''Filter'''
 # Transmitter Filter
 # Generate Filtered Signal with d aka Complex Signal as input
 usf_filter = 8
@@ -64,12 +62,6 @@ tx_power = transmitter_power()
 switch_graph_channel = input("\033[31m\033[1mEnter ON/on to display graph of channel output or OFF otherwise:\033[0m\033[0m ")
 [y,SNR] =  simulate_channel(Filtered_signal,tx_power,switch_graph_channel)
 
-# Receiver
-
-# angles = np.angle(d)
-# print(angles)
-# c_hat = detect_symbols(d,0,'ON')
-# print(c_hat)
 
 plt.show()
 

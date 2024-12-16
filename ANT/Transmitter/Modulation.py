@@ -179,8 +179,6 @@ def map2symbols(CodeWord,switch_mod,switch_graph):
             else:
                 print(f"No match found for Modulating Set {ModSetp1_binary}")
 
-        # plt.show()
-        # plt.close()
         print(f"\033[32m\033[1mOutput Vector:\033[0m\033[0m\n{Output_Vector}")
 
     else:
