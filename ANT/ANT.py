@@ -1,5 +1,7 @@
 '''This is the main file calling the function from different modules.
 Output being displayed in Green and input prompts in Red
+Receiver side doesn't work so is to be commented out before running the
+transmitter and Channel. Also corresponding import lines are to be commented for Receiver
 '''
 # Import of functions created in GenerateBits.py
 from Transmitter.GenerateBits import generate_bits
@@ -10,6 +12,13 @@ from Channel.Channel import transmitter_power
 from Channel.Channel import simulate_channel
 from Transmitter.Filter import filter_tx
 import matplotlib.pyplot as plt
+# Receiver side import - to be commented because not working
+from Receiver.Demodulation import detect_symbols
+from Receiver.Decode import decode_hamming
+from Receiver.Decode import binary_to_decimal
+from Receiver.Sink import count_errors
+
+import numpy as np
 
 # Transmitter
 '''Generate Bits'''
@@ -55,13 +64,29 @@ print(f'\033[32m\033[1mComplex Signal:\033[0m\033[0m {d}')
 usf_filter = 8
 Filtered_signal=filter_tx(d,usf_filter,"ON")
 
-'''Channel'''
 # Channel
+'''Channel'''
 # Generator
 tx_power = transmitter_power()
 switch_graph_channel = input("\033[31m\033[1mEnter ON/on to display graph of channel output or OFF otherwise:\033[0m\033[0m ")
 [y,SNR] =  simulate_channel(Filtered_signal,tx_power,switch_graph_channel)
 
+# Receiver Side
+# filter - Not implemented
+
+# demodulation - Need to be commented out because not working correctly
+angle = np.angle(p)
+print(angle)
+c_hat = detect_symbols(d,0,'ON')
+print(c_hat)
+
+# decode - Need to be commented out because not working correctly
+b_hat=decode_hamming(c_hat,parity_check_matrix,switch_graph)
+print(b_hat)
+print(f"Code word: {Code_word}")
+
+# sink - Need to be commented out because not working correctly
+[BE,BEuc]=count_errors(bits,b_hat,Code_word,c_hat)
 
 plt.show()
 
